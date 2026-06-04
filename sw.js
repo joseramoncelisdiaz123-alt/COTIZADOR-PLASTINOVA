@@ -1,22 +1,20 @@
-const CACHE_NAME = 'plastinova-v1';
+const CACHE_NAME = 'plastinova-v2';
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './logo.jpeg'
+  '/COTIZADOR-PLASTINOVA/',
+  '/COTIZADOR-PLASTINOVA/index.html',
+  '/COTIZADOR-PLASTINOVA/manifest.json'
 ];
 
-// Instalar el Service Worker y guardar en caché los archivos base
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        return cache.addAll(urlsToCache);
+        // Usamos catch para que si un archivo falla, no se muera toda la app
+        return cache.addAll(urlsToCache).catch(err => console.log('Error en caché', err));
       })
   );
 });
 
-// Interceptar las peticiones para que funcione sin conexión
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)

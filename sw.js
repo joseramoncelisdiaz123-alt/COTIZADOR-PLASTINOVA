@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plastinova-v2';
+const CACHE_NAME = 'plastinova-v3';
 const urlsToCache = [
   '/COTIZADOR-PLASTINOVA/',
   '/COTIZADOR-PLASTINOVA/index.html',

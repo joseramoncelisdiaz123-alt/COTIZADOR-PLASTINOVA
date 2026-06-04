@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Plastinova Pro v2.3</title>
+    <title>Plastinova Pro v2.5</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#090a0f">
@@ -13,79 +13,120 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
     <style>
-        :root { --fondo: #090a0f; --azul: #00f3ff; --morado: #bc13fe; --texto: #e0e6ed; --oro: #ffcc00; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--fondo); color: var(--texto); padding: 20px; padding-bottom: 90px; background-image: radial-gradient(circle at 50% -20%, rgba(0, 243, 255, 0.15), transparent 50%); min-height: 100vh; }
+        /* === ESTÉTICA NEÓN PLASTINOVA === */
+        :root {
+            --fondo: #090a0f;
+            --azul: #00f3ff; 
+            --morado: #bc13fe; 
+            --texto: #e0e6ed;
+            --oro: #ffcc00; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fondo); color: var(--texto); padding: 20px; padding-bottom: 90px; background-image: radial-gradient(circle at 50% -20%, rgba(0, 243, 255, 0.15), transparent 50%); min-height: 100vh; overflow-x: hidden; }
+
+        /* CHISPAS */
         .chispa { position: fixed; pointer-events: none; z-index: 0; background: var(--oro); border-radius: 50%; box-shadow: 0 0 8px var(--oro); opacity: 0; }
         @keyframes volarChispa { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--dir-x), var(--dir-y)) scale(0.2); } }
+
         header { text-align: center; margin-bottom: 20px; z-index: 10; position: relative; }
         .logo-img { max-width: 180px; filter: drop-shadow(0 0 10px rgba(0,243,255,0.3)); margin-bottom: 10px; }
         h1 { font-size: 24px; color: #fff; text-shadow: 0 0 10px var(--azul); }
-        .panel { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; max-width: 450px; margin: 0 auto 20px auto; backdrop-filter: blur(10px); }
-        .pantalla { display: none; } .pantalla.activa { display: block; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(9,10,15,0.9); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 15px; z-index: 100; }
+
+        .panel { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; width: 100%; max-width: 450px; margin: 0 auto 20px auto; backdrop-filter: blur(10px); }
+        .pantalla { display: none; animation: fadeIn 0.3s ease; }
+        .pantalla.activa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(9, 10, 15, 0.9); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 15px 10px 25px 10px; z-index: 100; }
         .tab-btn { background: none; border: none; color: #8b9bb4; font-size: 12px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
         .tab-btn.activo { color: var(--azul); }
+
         .grupo-input { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; color: #8b9bb4; margin-bottom: 6px; }
-        select, input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,243,255,0.3); color: #fff; padding: 12px; border-radius: 12px; font-size: 15px; outline: none; }
-        .btn-neon { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); color: var(--azul); font-weight: bold; border: 2px solid var(--azul); border-radius: 12px; cursor: pointer; margin-top: 10px; }
+        label { display: block; font-size: 11px; color: #8b9bb4; margin-bottom: 6px; text-transform: uppercase; }
+        select, input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(0, 243, 255, 0.3); color: #fff; padding: 12px; border-radius: 12px; font-size: 15px; outline: none; }
+        
+        .btn-micro { background: rgba(188, 19, 254, 0.1); border: 1px solid var(--morado); color: var(--morado); padding: 4px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; }
+        .btn-micro.activo-porcentaje { background: rgba(0, 243, 255, 0.1); border-color: var(--azul); color: var(--azul); }
+
+        .btn-neon { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); color: var(--azul); font-weight: bold; border: 2px solid var(--azul); border-radius: 12px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .btn-secundario { border-color: var(--morado); color: var(--morado); }
         .btn-pdf { border-color: #2ecc71; color: #2ecc71; }
-        #lista-carrito { list-style: none; margin-bottom: 15px; }
-        #lista-carrito li { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--azul); position: relative; }
-        .totales-caja { background: rgba(188,19,254,0.1); padding: 15px; border-radius: 12px; }
-        .tarjeta-historial { background: rgba(0,0,0,0.4); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-        .btn-micro { background: rgba(188,19,254,0.1); border: 1px solid var(--morado); color: var(--morado); padding: 4px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; }
-        .btn-micro.activo-porcentaje { background: rgba(0,243,255,0.1); border-color: var(--azul); color: var(--azul); }
+        
+        #lista-carrito { list-style: none; margin-bottom: 15px; font-size: 13px; }
+        #lista-carrito li { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--azul); position: relative; }
+        .btn-eliminar { position: absolute; right: 10px; top: 10px; color: #ff3366; background: none; border: none; font-size: 18px; cursor: pointer; }
+        
+        .totales-caja { background: rgba(188, 19, 254, 0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(188, 19, 254, 0.3); }
+        .fila-total { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; }
+        .gran-total { font-size: 18px; font-weight: bold; color: var(--azul); margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
+        .tarjeta-historial { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--morado); }
     </style>
 </head>
 <body>
-    <header><img src="logo.jpeg" alt="Plastinova" class="logo-img"><h1>PLASTINOVA PRO v2.3</h1></header>
+
+    <header>
+        <img src="logo.jpeg" alt="Logo" class="logo-img">
+        <h1>Plastinova</h1>
+        <h2 style="font-size:10px; color:var(--morado); letter-spacing:3px;">COTIZADOR PRO v2.5</h2>
+    </header>
+
     <nav class="nav-bar">
-        <button class="tab-btn activo" onclick="cambiarTab('cotizador')" id="btn-tab-cot">✍️ CREAR</button>
-        <button class="tab-btn" onclick="cambiarTab('historial')" id="btn-tab-his">📁 HISTORIAL</button>
+        <button class="tab-btn activo" onclick="cambiarTab('cotizador')" id="t-cot">✍️ CREAR</button>
+        <button class="tab-btn" onclick="cambiarTab('historial')" id="t-his">📁 HISTORIAL</button>
     </nav>
 
     <div id="pantalla-cotizador" class="pantalla activa">
         <div class="panel">
-            <div class="grupo-input"><label>CLIENTE</label><input type="text" id="inp-cliente" placeholder="Nombre"></div>
-            <div class="grupo-input"><label>ASESOR</label><select id="sel-asesor"><option>Pedro</option><option>Fernando</option><option>Isidro</option><option>Ofelia</option><option>Ramón</option></select></div>
+            <div class="grupo-input"><label>Nombre del Cliente</label><input type="text" id="inp-cliente" placeholder="Nombre/Empresa"></div>
+            <div class="grupo-input"><label>Asesor</label><select id="sel-asesor"><option>Pedro</option><option>Fernando</option><option>Isidro</option><option>Ofelia</option><option>Ramón</option></select></div>
         </div>
+
         <main class="panel">
-            <div class="grupo-input"><label>PRODUCTO</label><select id="sel-tipo"><option value="tinaco">Tinacos (Tricapa)</option><option value="tambo">Tambos (Bicapa)</option></select></div>
-            <div style="display:flex; gap:10px;">
-                <div class="grupo-input" style="flex:1;"><label>CAPACIDAD</label><select id="sel-capacidad"></select></div>
-                <div class="grupo-input" style="flex:1;"><label>COLOR</label><select id="sel-color"></select></div>
+            <div class="grupo-input"><label>Producto</label><select id="sel-tipo"><option value="tinaco">Tinacos (Tricapa)</option><option value="tambo">Tambos (Bicapa)</option></select></div>
+            <div style="display: flex; gap: 10px;">
+                <div class="grupo-input" style="flex: 1;"><label>Capacidad</label><select id="sel-capacidad"></select></div>
+                <div class="grupo-input" style="flex: 1;"><label>Color</label><select id="sel-color"></select></div>
             </div>
-            <input type="text" id="inp-color-otro" placeholder="Escribe el color..." style="display:none; margin-bottom:15px; border-color:var(--morado);">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:12px;"><span>MAYOREO BASE</span><input type="checkbox" id="check-mayoreo" style="width:20px;"></div>
-            <div style="display:flex; gap:10px;">
-                <div class="grupo-input" style="flex:1;"><label>BASE</label><input type="number" id="inp-precio-base" disabled></div>
-                <div class="grupo-input" style="flex:1;">
-                    <div style="display:flex; justify-content:space-between;"><label>DESC.</label><button id="btn-tipo-desc" class="btn-micro">[ $ ] Fijo</button></div>
+            <input type="text" id="inp-color-otro" placeholder="Escribe el color..." style="display: none; margin-bottom: 15px; border-color: var(--morado);">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; font-size:12px;">
+                <span>MAYOREO BASE</span>
+                <input type="checkbox" id="check-mayoreo" style="width:20px; height:20px;">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div class="grupo-input" style="flex: 1;"><label>Precio Base</label><input type="number" id="inp-precio-base" disabled></div>
+                <div class="grupo-input" style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between;"><label>Desc.</label><button id="btn-tipo-desc" class="btn-micro">[ $ ] Fijo</button></div>
                     <input type="number" id="inp-descuento" value="0">
                 </div>
             </div>
-            <div style="display:flex; gap:10px;">
-                <div class="grupo-input" style="flex:1;"><label>CANT.</label><input type="number" id="inp-cantidad" value="1"></div>
-                <div class="grupo-input" style="flex:1;"><label>NETO U.</label><input type="number" id="inp-precio-final" style="color:var(--azul); font-weight:bold;"></div>
+            <div style="display: flex; gap: 10px;">
+                <div class="grupo-input" style="flex: 1;"><label>Cantidad</label><input type="number" id="inp-cantidad" value="1"></div>
+                <div class="grupo-input" style="flex: 2;"><label style="color: var(--azul);">Precio Neto Unitario</label><input type="number" id="inp-precio-final" style="font-weight: bold; color: var(--azul);"></div>
             </div>
-            <button class="btn-neon" onclick="agregarAlCarrito()">+ AGREGAR PRODUCTO</button>
+            <button class="btn-neon" onclick="agregarItem()">+ AGREGAR AL CARRITO</button>
         </main>
+
         <section class="panel">
-            <div style="margin-bottom:15px; font-size:12px; color:var(--morado);"><span>IVA (16%): </span><input type="checkbox" id="check-iva" style="width:18px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; font-size:12px; color:var(--morado);">
+                <span>COTIZAR CON IVA (16%)</span>
+                <input type="checkbox" id="check-iva" style="width:20px; height:20px;">
+            </div>
             <ul id="lista-carrito"></ul>
             <div class="totales-caja">
-                <div style="display:flex;justify-content:space-between;"><span>Subtotal:</span><span id="txt-subtotal">$0.00</span></div>
-                <div style="display:flex;justify-content:space-between;color:#ff3366;"><span>Ahorro:</span><span id="txt-ahorro">-$0.00</span></div>
-                <div style="display:flex;justify-content:space-between;font-weight:bold;color:var(--azul);margin-top:10px;font-size:18px;"><span>TOTAL:</span><span id="txt-total">$0.00</span></div>
+                <div class="fila-total"><span>Subtotal Lista:</span> <span id="txt-subtotal">$0.00</span></div>
+                <div class="fila-total" style="color: #ff3366;"><span>Ahorro Aplicado:</span> <span id="txt-ahorro">-$0.00</span></div>
+                <div class="fila-total"><span>IVA (16%):</span> <span id="txt-iva">$0.00</span></div>
+                <div class="fila-total gran-total"><span>TOTAL A PAGAR:</span> <span id="txt-total">$0.00</span></div>
             </div>
-            <button class="btn-neon" style="border-color:var(--morado); color:var(--morado);" onclick="enviarWhatsApp()">WHATSAPP PROFESIONAL</button>
-            <button class="btn-neon btn-pdf" onclick="generarPDF()">PDF PROFESIONAL</button>
+            <button class="btn-neon btn-secundario" onclick="compartirWhatsApp()">WhatsApp Profesional</button>
+            <button class="btn-neon btn-pdf" onclick="generarPDF()">PDF Profesional</button>
         </section>
     </div>
 
-    <div id="pantalla-historial" class="pantalla"><div class="panel"><h3 style="text-align:center; margin-bottom:15px;">HISTORIAL</h3><div id="contenedor-historial"></div><button class="btn-neon" style="border-color:#ff3366;color:#ff3366;" onclick="limpiarTodo()">Borrar Todo</button></div></div>
+    <div id="pantalla-historial" class="pantalla"><div class="panel"><h3 style="text-align:center; margin-bottom:15px;">HISTORIAL</h3><div id="contenedor-historial"></div><button class="btn-neon" style="border-color:#ff3366;color:#ff3366;margin-top:20px;" onclick="limpiarHistorial()">Borrar todo</button></div></div>
 
     <script>
         function crearChispa() {
@@ -104,105 +145,154 @@
         let carrito = []; let tipoDesc = 'monto';
         let historial = JSON.parse(localStorage.getItem('plastinova_historial')) || [];
 
-        function actualizarForm() {
+        function actForm() {
             const d = db[document.getElementById('sel-tipo').value];
             document.getElementById('sel-capacidad').innerHTML = Object.keys(d.capacidades).map(c=>`<option value="${c}">${c}</option>`).join('');
-            document.getElementById('sel-color').innerHTML = d.colores.map(c=>`<option value="${c}">${c}</option>`).join('') + '<option value="otro">Otro (Manual)...</option>';
-            actualizarPrecio();
+            document.getElementById('sel-color').innerHTML = d.colores.map(c=>`<option value="${c}">${c}</option>`).join('') + `<option value="otro">Otro (Manual)...</option>`;
+            actPrecio();
         }
         document.getElementById('sel-color').onchange = () => { document.getElementById('inp-color-otro').style.display = document.getElementById('sel-color').value === 'otro' ? 'block' : 'none'; };
 
-        function actualizarPrecio() {
+        function actPrecio() {
             const v = db[document.getElementById('sel-tipo').value].capacidades[document.getElementById('sel-capacidad').value];
             document.getElementById('inp-precio-base').value = document.getElementById('check-mayoreo').checked ? v.mayoreo : v.normal;
-            calcularFinal();
+            calcD();
         }
 
         document.getElementById('btn-tipo-desc').onclick = () => {
             tipoDesc = (tipoDesc === 'monto') ? 'porcentaje' : 'monto';
             document.getElementById('btn-tipo-desc').innerText = (tipoDesc === 'monto') ? '[ $ ] Fijo' : '[ % ] Porcent.';
             document.getElementById('btn-tipo-desc').classList.toggle('activo-porcentaje', tipoDesc === 'porcentaje');
-            calcularFinal();
+            calcD();
         };
 
-        function calcularFinal() {
+        function calcD() {
             let b = parseFloat(document.getElementById('inp-precio-base').value) || 0;
             let d = parseFloat(document.getElementById('inp-descuento').value) || 0;
             document.getElementById('inp-precio-final').value = (tipoDesc === 'monto') ? (b - d).toFixed(2) : (b - (b * (d / 100))).toFixed(2);
         }
 
-        document.getElementById('inp-descuento').oninput = calcularFinal;
-        document.getElementById('sel-tipo').onchange = actualizarForm;
-        document.getElementById('sel-capacidad').onchange = actualizarPrecio;
-        document.getElementById('check-mayoreo').onchange = actualizarPrecio;
+        document.getElementById('inp-descuento').oninput = calcD;
+        document.getElementById('sel-tipo').onchange = actForm;
+        document.getElementById('sel-capacidad').onchange = actPrecio;
+        document.getElementById('check-mayoreo').onchange = actPrecio;
         document.getElementById('check-iva').onchange = renderTotales;
 
-        function agregarAlCarrito() {
+        function agregarItem() {
             const v = db[document.getElementById('sel-tipo').value].capacidades[document.getElementById('sel-capacidad').value];
             const col = document.getElementById('sel-color').value === 'otro' ? document.getElementById('inp-color-otro').value : document.getElementById('sel-color').value;
             carrito.push({
-                id: Date.now(), nombre: `${document.getElementById('sel-tipo').value.toUpperCase()} ${document.getElementById('sel-capacidad').value}`,
-                color: col || 'N/A', cant: parseInt(document.getElementById('inp-cantidad').value),
-                pNorm: v.normal, pFin: parseFloat(document.getElementById('inp-precio-final').value),
-                imp: parseFloat(document.getElementById('inp-precio-final').value) * parseInt(document.getElementById('inp-cantidad').value)
+                id: Date.now(), nombre: `Tinaco ${document.getElementById('sel-capacidad').value} (${db[document.getElementById('sel-tipo').value].capa})`,
+                color: col || 'Beige', cant: parseInt(document.getElementById('inp-cantidad').value),
+                pLista: v.normal, pAplicado: parseFloat(document.getElementById('inp-precio-final').value),
+                ahorro: v.normal - parseFloat(document.getElementById('inp-precio-final').value),
+                importe: parseFloat(document.getElementById('inp-precio-final').value) * parseInt(document.getElementById('inp-cantidad').value)
             });
             renderCar();
         }
 
         function renderCar() {
-            document.getElementById('lista-carrito').innerHTML = carrito.map(i => `<li><b>${i.cant}x</b> ${i.nombre}<br><small>Color: ${i.color}</small><br>Importe: $${i.imp.toFixed(2)} <button style="float:right;color:red;background:none;border:none;" onclick="del(${i.id})">×</button></li>`).join('');
+            document.getElementById('lista-carrito').innerHTML = carrito.map(i => `<li><b>${i.cant}x</b> ${i.nombre}<br><small>Color: ${i.color}</small><br>Importe: $${i.importe.toFixed(2)}<button class="btn-eliminar" onclick="borrarItem(${i.id})">×</button></li>`).join('');
             renderTotales();
         }
-        window.del = id => { carrito = carrito.filter(i=>i.id!==id); renderCar(); };
+        window.borrarItem = id => { carrito = carrito.filter(i=>i.id!==id); renderCar(); };
 
+        let totalFinal = 0;
         function renderTotales() {
-            let sL = 0, sN = 0;
-            carrito.forEach(i => { sL += (i.pNorm * i.cant); sN += i.imp; });
-            let iv = document.getElementById('check-iva').checked ? sN * 0.16 : 0;
-            document.getElementById('txt-subtotal').innerText = `$${sL.toFixed(2)}`;
-            document.getElementById('txt-ahorro').innerText = `-$${(sL - sN).toFixed(2)}`;
-            document.getElementById('txt-total').innerText = `$${(sN + iv).toFixed(2)} MXN`;
+            let sLista = 0, sNeto = 0, ahorroTotal = 0;
+            carrito.forEach(i => { sLista += (i.pLista * i.cant); sNeto += i.importe; ahorroTotal += (i.ahorro * i.cant); });
+            let iv = document.getElementById('check-iva').checked ? sNeto * 0.16 : 0;
+            totalFinal = sNeto + iv;
+            document.getElementById('txt-subtotal').innerText = `$${sLista.toFixed(2)}`;
+            document.getElementById('txt-ahorro').innerText = `-$${ahorroTotal.toFixed(2)}`;
+            document.getElementById('txt-iva').innerText = `$${iv.toFixed(2)}`;
+            document.getElementById('txt-total').innerText = `$${totalFinal.toFixed(2)} MXN`;
         }
 
-        function enviarWhatsApp() {
-            if(carrito.length === 0) return alert("Vacio");
-            const f = Math.floor(Math.random()*9000)+1000;
-            let txt = `\uD83D\uDCA7 *COTIZACION PLASTINOVA*\nFolio: #${f}\nCliente: ${document.getElementById('inp-cliente').value || 'General'}\n--------------------------\n`;
+        function compartirWhatsApp() {
+            if(carrito.length === 0) return alert("Agrega productos.");
+            const f = Math.floor(Math.random()*9000)+1000; const d = new Date().toLocaleDateString('es-MX');
+            const cl = document.getElementById('inp-cliente').value || "General";
+            const as = document.getElementById('sel-asesor').value;
+            const line = "-----------------------------------------";
+            
+            // EMOJIS UNICODE HEX PARA MÁXIMA COMPATIBILIDAD
+            const drop = "\uD83D\uDCA7"; const user = "\uD83D\uDC64"; const clip = "\uD83D\uDCCB";
+            const char = "\uD83D\uDCCA"; const ok = "\u2705"; const crd = "\uD83D\uDCB3"; const warn = "\u26A0\uFE0F";
+            const square = "\u25A0";
+
+            let msg = `${drop} *COTIZACIÓN PLASTINOVA*\nFolio: *#${f}*\nFecha: ${d}\n${line}\n${user} *Cliente:* ${cl}\nAsesor: ${as}\n${line}\n${clip} *DETALLE DE PRODUCTOS*\n\n`;
+
+            let sL = 0, sN = 0, ah = 0;
             carrito.forEach(i => {
-                txt += `\u25A0 *${i.cant}x ${i.nombre}*\nColor: ${i.color}\nPrecio: $${i.pFin.toFixed(2)}\nImporte: $${i.imp.toFixed(2)}\n\n`;
+                msg += `${square} *${i.cant}x | ${i.nombre}*\nColor: ${i.color}\n`;
+                if(i.ahorro > 0) {
+                    msg += `Precio Lista: $${i.pLista.toFixed(2)}\n*Precio Aplicado:* $${i.pAplicado.toFixed(2)} (Ahorro: $${i.ahorro.toFixed(2)} c/u)\n`;
+                } else { msg += `Precio Unitario: $${i.pAplicado.toFixed(2)}\n`; }
+                msg += `Importe: $${i.importe.toFixed(2)}\n\n`;
+                sL += (i.pLista*i.cant); sN += i.importe; ah += (i.ahorro*i.cant);
             });
-            txt += `--------------------------\n*TOTAL: ${document.getElementById('txt-total').innerText}*`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
-            historial.unshift({ f, c: document.getElementById('inp-cliente').value, t: document.getElementById('txt-total').innerText, items: [...carrito] });
+
+            let iv = document.getElementById('check-iva').checked ? sN * 0.16 : 0;
+            msg += `${line}\n${char} *TOTALES*\nSubtotal lista: $${sL.toFixed(2)}\nAhorro aplicado: -$${ah.toFixed(2)}\nSubtotal: $${sN.toFixed(2)}\nIVA (16%): $${iv.toFixed(2)}\n${line}\n${ok} *TOTAL A PAGAR: $${(sN + iv).toFixed(2)} MXN*\n${line}\n_${crd} Métodos de pago: Efectivo y Transferencia._\n_${warn} ${document.getElementById('check-iva').checked ? 'Cotización con IVA incluido.' : 'Si requiere factura, notifique para actualizar el cálculo del IVA.'}_`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            historial.unshift({ f, cl, t: totalFinal, items: [...carrito], as, iva: document.getElementById('check-iva').checked });
             localStorage.setItem('plastinova_historial', JSON.stringify(historial));
         }
 
         function generarPDF() {
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            const cl = document.getElementById('inp-cliente').value || "CLIENTE GENERAL";
+            const f = Math.floor(Math.random()*9000)+1000;
+            
             const logo = new Image(); logo.src = 'logo.jpeg';
             try { doc.addImage(logo, 'JPEG', 15, 8, 35, 18); } catch(e){}
-            doc.setFontSize(22); doc.setTextColor(200,30,30); doc.text("PLASTINOVA", 70, 18);
+
+            // TEXTO MOVIDO A X=70 PARA QUE NUNCA TOQUE EL LOGO
+            doc.setFontSize(22); doc.setTextColor(200, 30, 30); doc.text("PLASTINOVA", 70, 18);
             doc.setFontSize(10); doc.setTextColor(100); doc.text("SOLUCIONES EN ALMACENAMIENTO", 70, 24);
-            const body = carrito.map(i => [i.cant, i.nombre, i.color, `$${i.pFin.toFixed(2)}`, `$${i.imp.toFixed(2)}`]);
-            doc.autoTable({ startY: 65, head: [['CANT','DESCRIPCIÓN','COLOR','PRECIO U.','IMPORTE']], body: body, theme: 'grid', headStyles: {fillColor:[20,90,160]} });
-            doc.text("TOTAL: " + document.getElementById('txt-total').innerText, 195, doc.lastAutoTable.finalY + 15, {align:'right'});
-            doc.save("Cotizacion.pdf");
+            
+            doc.setTextColor(40); doc.text(`FOLIO: #${f}`, 195, 20, { align: 'right' });
+            doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 195, 26, { align: 'right' });
+            
+            doc.setFillColor(245, 247, 250); doc.roundedRect(15, 35, 180, 22, 2, 2, 'F');
+            doc.setTextColor(0); doc.setFont(undefined, 'bold');
+            doc.text("CLIENTE:", 20, 42); doc.text("ASESOR:", 120, 42);
+            doc.setFont(undefined, 'normal'); doc.text(cl.toUpperCase(), 20, 50); doc.text(document.getElementById('sel-asesor').value.toUpperCase(), 120, 50);
+
+            const body = carrito.map(i => [i.cant, i.nombre, i.color, `$${i.pAplicado.toFixed(2)}`, `$${i.importe.toFixed(2)}`]);
+            doc.autoTable({ startY: 65, head: [['CANT', 'DESCRIPCIÓN', 'COLOR', 'PRECIO U.', 'IMPORTE']], body: body, theme: 'grid', headStyles: { fillColor: [20, 90, 160] } });
+            
+            const fY = doc.lastAutoTable.finalY + 10;
+            doc.text("SUBTOTAL LISTA:", 140, fY); doc.text(document.getElementById('txt-subtotal').innerText, 195, fY, { align: 'right' });
+            doc.text("AHORRO:", 140, fY + 7); doc.setTextColor(200,0,0); doc.text(document.getElementById('txt-ahorro').innerText, 195, fY + 7, { align: 'right' });
+            doc.setTextColor(0); doc.text("IVA (16%):", 140, fY + 14); doc.text(document.getElementById('txt-iva').innerText, 195, fY + 14, { align: 'right' });
+            doc.setFontSize(14); doc.setFont(undefined, 'bold');
+            doc.text("TOTAL:", 140, fY + 22); doc.setTextColor(20, 90, 160); doc.text(document.getElementById('txt-total').innerText, 195, fY + 22, { align: 'right' });
+            doc.save(`Cotizacion_${cl}.pdf`);
         }
 
         function cambiarTab(t) {
-            document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
             document.getElementById('pantalla-'+t).classList.add('activa');
             if(t === 'historial') {
-                document.getElementById('contenedor-historial').innerHTML = historial.map(h => `<div class="tarjeta-historial"><b>#${h.f}</b> - ${h.c}<br>Total: ${h.t} <button onclick="cargar(${h.f})" style="color:var(--azul);background:none;border:1px solid;padding:2px 5px;border-radius:5px;margin-top:5px;">Editar</button></div>`).join('');
+                document.getElementById('contenedor-historial').innerHTML = historial.map(h => `<div class="tarjeta-historial"><div style="display:flex; justify-content:space-between; font-weight:bold;"><span>#${h.f}</span><span>$${h.t.toFixed(2)}</span></div><div style="font-size:12px; color:#8b9bb4; margin:5px 0;">${h.cl}</div><button onclick="cargarH(${h.f})" style="color:var(--azul);background:none;border:1px solid;padding:5px 10px;border-radius:10px;">Editar</button></div>`).join('');
             }
         }
-        window.cargar = f => {
+
+        window.cargarH = f => {
             const h = historial.find(i=>i.f===f); if(!h) return;
-            document.getElementById('inp-cliente').value = h.c; carrito = [...h.items]; renderCar(); cambiarTab('cotizador');
+            document.getElementById('inp-cliente').value = h.cl;
+            document.getElementById('sel-asesor').value = h.as;
+            document.getElementById('check-iva').checked = h.iva;
+            carrito = [...h.items]; renderCar(); cambiarTab('cotizador');
         };
-        function limpiarTodo() { if(confirm("¿Borrar?")) { localStorage.removeItem('plastinova_historial'); historial=[]; cambiarTab('historial'); } }
+
+        function limpiarHistorial() { if(confirm("¿Borrar?")) { localStorage.removeItem('plastinova_historial'); historial = []; cambiarTab('historial'); } }
+        
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
-        actualizarForm();
+        actForm();
     </script>
 </body>
 </html>

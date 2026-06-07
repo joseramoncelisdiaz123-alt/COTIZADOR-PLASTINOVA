@@ -38,8 +38,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(9, 10, 15, 0.9); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 15px 10px 25px 10px; z-index: 100; }
-        .tab-btn { background: none; border: none; color: #8b9bb4; font-size: 12px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        .tab-btn.activo { color: var(--azul); }
+        .tab-btn { background: none; border: none; color: #8b9bb4; font-size: 11px; font-weight: bold; text-transform: uppercase; cursor: pointer; padding: 5px; }
+        .tab-btn.activo { color: var(--azul); text-shadow: 0 0 5px rgba(0,243,255,0.5); }
 
         .grupo-input { margin-bottom: 15px; }
         label { display: block; font-size: 11px; color: #8b9bb4; margin-bottom: 6px; text-transform: uppercase; }
@@ -48,7 +48,8 @@
         .btn-micro { background: rgba(188, 19, 254, 0.1); border: 1px solid var(--morado); color: var(--morado); padding: 4px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; }
         .btn-micro.activo-porcentaje { background: rgba(0, 243, 255, 0.1); border-color: var(--azul); color: var(--azul); }
 
-        .btn-neon { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); color: var(--azul); font-weight: bold; border: 2px solid var(--azul); border-radius: 12px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .btn-neon { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); color: var(--azul); font-weight: bold; border: 2px solid var(--azul); border-radius: 12px; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.2s; }
+        .btn-neon:active { transform: scale(0.95); }
         .btn-secundario { border-color: var(--morado); color: var(--morado); }
         .btn-pdf { border-color: #2ecc71; color: #2ecc71; }
         
@@ -66,13 +67,14 @@
 <body>
 
     <header>
-        <img src="logo.jpeg" alt="Logo" class="logo-img">
+        <img src="logo.jpeg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
         <h1>Plastinova</h1>
         <h2 style="font-size:10px; color:var(--morado); letter-spacing:3px;">COTIZADOR PRO v2.5</h2>
     </header>
 
     <nav class="nav-bar">
         <button class="tab-btn activo" onclick="cambiarTab('cotizador')" id="t-cot">✍️ CREAR</button>
+        <button class="tab-btn" onclick="cambiarTab('respuestas')" id="t-res">💬 RESPUESTAS</button>
         <button class="tab-btn" onclick="cambiarTab('historial')" id="t-his">📁 HISTORIAL</button>
     </nav>
 
@@ -126,9 +128,46 @@
         </section>
     </div>
 
-    <div id="pantalla-historial" class="pantalla"><div class="panel"><h3 style="text-align:center; margin-bottom:15px;">HISTORIAL</h3><div id="contenedor-historial"></div><button class="btn-neon" style="border-color:#ff3366;color:#ff3366;margin-top:20px;" onclick="limpiarHistorial()">Borrar todo</button></div></div>
+    <div id="pantalla-respuestas" class="pantalla">
+        <div class="panel">
+            <h3 style="text-align:center; margin-bottom:5px; color: var(--azul);">GENERADOR DE MENSAJES</h3>
+            <p style="font-size: 11px; color: #8b9bb4; text-align: center; margin-bottom: 20px;">Usa el nombre ingresado en el cotizador.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('bienvenida')">👋 Bienvenida</button>
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('seguimiento')">🏃‍♂️ Seguimiento</button>
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('infoGeneral')">💧 Info General</button>
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('caracteristicas')">⚙️ Características</button>
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('calidad')">🛡️ Calidades</button>
+                <button class="btn-neon" style="font-size: 11px; padding: 10px; margin-top:0;" onclick="copiarMensaje('preciosBase')">💰 Lista Precios</button>
+            </div>
+
+            <h4 style="text-align:center; margin: 25px 0 15px 0; color: var(--morado); font-size: 12px; letter-spacing: 1px;">TEXTOS AVANZADOS</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <button class="btn-neon btn-secundario" style="font-size: 12px; padding: 12px; margin-top:0;" onclick="copiarMensaje('industrial')">🏢 Cierre Grado Industrial</button>
+                <button class="btn-neon btn-secundario" style="font-size: 12px; padding: 12px; margin-top:0;" onclick="copiarMensaje('aliadoFerretero')">🛠️ Cierre para Ferreterías</button>
+                <button class="btn-neon btn-secundario" style="font-size: 12px; padding: 12px; margin-top:0;" onclick="copiarMensaje('precioEspecial')">📉 Oferta Precio Especial</button>
+                <button class="btn-neon btn-secundario" style="font-size: 12px; padding: 12px; margin-top:0;" onclick="copiarMensaje('envioInmediato')">🚚 Stock y Envío Inmediato</button>
+                <button class="btn-neon btn-secundario" style="font-size: 12px; padding: 12px; margin-top:0;" onclick="copiarMensaje('despedida')">👋 Despedida Cordial</button>
+            </div>
+
+            <div id="alerta-copiado" style="display: none; background: rgba(0, 243, 255, 0.1); color: var(--azul); border: 1px solid var(--azul); padding: 12px; border-radius: 8px; text-align: center; margin-top: 15px; font-weight: bold;">
+                ✅ ¡Mensaje Copiado! Pégalo en WhatsApp.
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-historial" class="pantalla">
+        <div class="panel">
+            <h3 style="text-align:center; margin-bottom:15px;">HISTORIAL</h3>
+            <div id="contenedor-historial"></div>
+            <button class="btn-neon" style="border-color:#ff3366;color:#ff3366;margin-top:20px;" onclick="limpiarHistorial()">Borrar todo</button>
+        </div>
+    </div>
 
     <script>
+        // EFECTO CHISPAS
         function crearChispa() {
             const c = document.createElement('div'); c.classList.add('chispa');
             c.style.left = Math.random()*100+'vw'; c.style.top = Math.random()*100+'vh';
@@ -145,6 +184,22 @@
         let carrito = []; let tipoDesc = 'monto';
         let historial = JSON.parse(localStorage.getItem('plastinova_historial')) || [];
 
+        // BASE DE DATOS DE MENSAJES RÁPIDOS
+        const plantillasMensajes = {
+            bienvenida: `¡Hola, [NOMBRE]! 👋 Qué gusto saludarte, gracias por comunicarte con nosotros. Somos fabricantes de *Tinacos Plastinova* 💧, tu mejor opción para el almacenamiento de agua segura ✨. ¿Para qué capacidad estás buscando o en qué te podemos asesorar el día de hoy? 🤔`,
+            seguimiento: `¡Hola, [NOMBRE]! 👋 Hace unos días nos contactaste para pedir información sobre nuestros tinacos 💧. Sé que a veces andamos a las prisas 🏃‍♂️, así que solo te escribo rápido para saber si te quedó alguna duda técnica 🛠️, sobre los envíos 🚚 o si te puedo ayudar con tu cotización 📝. ¡Quedo a la orden! 🙋‍♂️`,
+            infoGeneral: `Nuestros tinacos son la solución ideal para el almacenamiento de agua limpia y segura 💧✨. Están fabricados con tecnología de punta ⚙️ y plásticos de alta resistencia 🛡️, diseñados para soportar el clima exterior ☀️🌧️ y mantener el agua fresca y en perfectas condiciones para tu hogar 🏠.`,
+            caracteristicas: `Te comparto las características principales de nuestros equipos 👇:\n✅ *Capacidades:* 450L, 750L, 1100L, 2500L 📏\n✅ *Color:* Negro y Beige 🎨\n✅ *Equipamiento:* Cuentan con tapa de cierre hermético para evitar que entre polvo o insectos 🔒🐜.`,
+            calidad: `Trabajamos con los mejores estándares para que tu inversión dure muchísimos años 🥇:\n🛡️ Fabricación Tricapa de alta resistencia.\n💧 Plástico de grado alimenticio 100% virgen.\n🔍 Capa interior clara que facilita ver la calidad del agua.\n☀️ Protección UV contra los rayos del sol.`,
+            preciosBase: `¡Claro que sí! 🙌 Te comparto nuestra lista de precios base actualizada 💰:\n🔹 Tinaco 750L: $1,500\n🔹 Tinaco 1100L: $1,600\n🔹 Tinaco 1200L: $1,750\n\n🚚 *(Pregunta por nuestras opciones de envío a domicilio y métodos de pago 💳).*`,
+            industrial: `¿Busca una solución definitiva, confiable y duradera para el almacenamiento de agua, [NOMBRE]? Me dirijo a usted para presentarle nuestros tinacos de grado industrial, diseñados para superar los más altos estándares del mercado. 💧🏗️\n\nSabemos que la seguridad del agua es fundamental. Nuestros equipos ofrecen tecnología multicapa que bloquea los rayos UV, resistencia a la intemperie extrema ☀️🌧️ e higiene total con grado alimenticio.\n\n⚙️ *Equipamiento Integral Incluido:*\n🔹 Válvula de llenado\n🔹 Flotador\n🔹 Multiconector con llave de paso\n🔹 Jarro de aire\n🔹 Tapa con cierre hermético\n🔹 Filtro retenedor\n\nEstaré encantado de asesorarle personalmente. 🤝 ¿Le comparto una cotización sin compromiso?`,
+            aliadoFerretero: `¡Hola [NOMBRE]! 👋 En Tinacos Plastinova sabemos que el prestigio de tu negocio se construye con cada producto que entregas a tus clientes. 🏗️✨\n\nSabemos que abundan opciones de bajo costo con materiales reciclados. Pero vender Plastinova significa:\n✅ Reducir al mínimo las garantías por fallas. 📉\n✅ Ofrecer plástico grado alimenticio 100% virgen. 💎\n✅ Respaldar tu venta con 10 años de garantía. 🏆\n\n¡Súmate a la calidad que construye relaciones duraderas! 🏗️💼 ¿Te apoyamos con material promocional para tu punto de venta? 💬👇`,
+            precioEspecial: `¡Hola, [NOMBRE]! 👋 Es un gusto saludarte.\n\nEn Tinacos Plastinova queremos seguir siendo tu aliado estratégico. Por eso, para este pedido, hemos ajustado nuestro precio especial para ti 📉🚀.\n\nEsta es una oportunidad ideal para reforzar tu inventario con la mejor calidad del mercado a un precio más competitivo. ¿Te gustaría que apartemos tu pedido esta semana?\n\nQuedo atento a tus noticias. ¡Saludos! 🏗️💧`,
+            envioInmediato: `¡Hola [NOMBRE]! 👋 Solo para recordarte que en Tinacos Plastinova tenemos stock disponible para envío inmediato. Recuerda que al incluir los accesorios, le das un valor agregado a tus clientes y simplificas tu inventario. 📈💧 ¿Te gustaría que programemos un pedido para esta semana?`,
+            despedida: `¡Muchas gracias por comunicarte con Plastinova, [NOMBRE]! 💧\n\nEsperamos haber resuelto todas tus dudas. Recuerda que si decides concretar tu pedido, aquí estaremos listos para atenderte y garantizarte el mejor precio directo de fábrica. 🏭🛡️\n\n¡Que tengas un excelente día! 👋 Estaremos a un mensaje de distancia.`
+        };
+
+        // LÓGICA DE COTIZADOR EXISTENTE
         function actForm() {
             const d = db[document.getElementById('sel-tipo').value];
             document.getElementById('sel-capacidad').innerHTML = Object.keys(d.capacidades).map(c=>`<option value="${c}">${c}</option>`).join('');
@@ -216,7 +271,6 @@
             const as = document.getElementById('sel-asesor').value;
             const line = "-----------------------------------------";
             
-            // EMOJIS UNICODE HEX PARA MÁXIMA COMPATIBILIDAD
             const drop = "\uD83D\uDCA7"; const user = "\uD83D\uDC64"; const clip = "\uD83D\uDCCB";
             const char = "\uD83D\uDCCA"; const ok = "\u2705"; const crd = "\uD83D\uDCB3"; const warn = "\u26A0\uFE0F";
             const square = "\u25A0";
@@ -249,7 +303,6 @@
             const logo = new Image(); logo.src = 'logo.jpeg';
             try { doc.addImage(logo, 'JPEG', 15, 8, 35, 18); } catch(e){}
 
-            // TEXTO MOVIDO A X=70 PARA QUE NUNCA TOQUE EL LOGO
             doc.setFontSize(22); doc.setTextColor(200, 30, 30); doc.text("PLASTINOVA", 70, 18);
             doc.setFontSize(10); doc.setTextColor(100); doc.text("SOLUCIONES EN ALMACENAMIENTO", 70, 24);
             
@@ -273,9 +326,17 @@
             doc.save(`Cotizacion_${cl}.pdf`);
         }
 
+        // CONTROL DE PESTAÑAS (TABS) ACTUALIZADO
         function cambiarTab(t) {
+            // Ocultar todas las pantallas
             document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            // Mostrar la seleccionada
             document.getElementById('pantalla-'+t).classList.add('activa');
+            
+            // Actualizar color de botones de navegación
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('activo'));
+            document.getElementById('t-' + t.substring(0,3)).classList.add('activo');
+
             if(t === 'historial') {
                 document.getElementById('contenedor-historial').innerHTML = historial.map(h => `<div class="tarjeta-historial"><div style="display:flex; justify-content:space-between; font-weight:bold;"><span>#${h.f}</span><span>$${h.t.toFixed(2)}</span></div><div style="font-size:12px; color:#8b9bb4; margin:5px 0;">${h.cl}</div><button onclick="cargarH(${h.f})" style="color:var(--azul);background:none;border:1px solid;padding:5px 10px;border-radius:10px;">Editar</button></div>`).join('');
             }
@@ -291,6 +352,43 @@
 
         function limpiarHistorial() { if(confirm("¿Borrar?")) { localStorage.removeItem('plastinova_historial'); historial = []; cambiarTab('historial'); } }
         
+        // FUNCIÓN NUEVA: COPIAR RESPUESTAS
+        function copiarMensaje(tipo) {
+            let textoFinal = plantillasMensajes[tipo];
+            
+            // Toma el nombre desde el input del cotizador principal
+            let nombreInput = document.getElementById('inp-cliente').value.trim();
+            let nombre = nombreInput !== "" ? nombreInput : "cliente"; 
+
+            // Reemplaza la etiqueta [NOMBRE] por el nombre real
+            textoFinal = textoFinal.replace(/\[NOMBRE\]/g, nombre);
+
+            // Intentar usar la API moderna del portapapeles
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textoFinal)
+                    .then(() => mostrarAlertaCopiado())
+                    .catch(err => usarCopiadoAlternativo(textoFinal));
+            } else {
+                usarCopiadoAlternativo(textoFinal);
+            }
+        }
+
+        function usarCopiadoAlternativo(texto) {
+            let textArea = document.createElement("textarea");
+            textArea.value = texto;
+            textArea.style.position = "fixed"; textArea.style.left = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus(); textArea.select();
+            try { document.execCommand('copy'); mostrarAlertaCopiado(); } catch (err) { alert('Error al copiar el texto.'); }
+            textArea.remove();
+        }
+
+        function mostrarAlertaCopiado() {
+            const alerta = document.getElementById('alerta-copiado');
+            alerta.style.display = 'block';
+            setTimeout(() => { alerta.style.display = 'none'; }, 2000);
+        }
+
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
         actForm();
     </script>
